@@ -375,7 +375,7 @@ const KanbanPage = () => {
                 {selectedTask.attachments?.map((att) => (
                   <a
                     key={att._id || att}
-                    href={`http:// https://projectpulse-cqql.onrender.com/${att.path}`}
+                    href={`https://projectpulse-cqql.onrender.com/${att.path}`}
                     target="_blank"
                     rel="noreferrer"
                     className="p-2 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-300 hover:border-sky-500 truncate flex items-center gap-2"
