@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: #0f172a;
+    --bg-card: #1e293b;
+    --border-color: #334155;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+  }
+
+  body {
+    @apply bg-slate-950 text-slate-100 font-sans antialiased min-h-screen selection:bg-sky-500 selection:text-white;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Glassmorphism Card Style */
+.glass-card {
+  @apply bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-xl shadow-xl transition-all duration-200;
+}
+
+.glass-card-hover {
+  @apply glass-card hover:border-sky-500/50 hover:shadow-sky-500/10 hover:shadow-2xl;
+}
+
+.badge-todo {
+  @apply bg-slate-800 text-slate-300 border border-slate-700 px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+.badge-in-progress {
+  @apply bg-sky-950 text-sky-300 border border-sky-800 px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+.badge-review {
+  @apply bg-amber-950 text-amber-300 border border-amber-800 px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+.badge-done {
+  @apply bg-emerald-950 text-emerald-300 border border-emerald-800 px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.badge-low {
+  @apply bg-emerald-950/80 text-emerald-400 border border-emerald-800/80 px-2 py-0.5 rounded text-xs font-semibold;
+}
+.badge-medium {
+  @apply bg-blue-950/80 text-blue-400 border border-blue-800/80 px-2 py-0.5 rounded text-xs font-semibold;
+}
+.badge-high {
+  @apply bg-amber-950/80 text-amber-400 border border-amber-800/80 px-2 py-0.5 rounded text-xs font-semibold;
+}
+.badge-critical {
+  @apply bg-rose-950/80 text-rose-400 border border-rose-800/80 px-2 py-0.5 rounded text-xs font-semibold;
+}
