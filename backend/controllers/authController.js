@@ -62,7 +62,15 @@ const loginUser = async (req, res, next) => {
     }
 
     const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
-    if (user && (await user.matchPassword(password))) {
+
+console.log("LOGIN EMAIL:", email);
+console.log("USER FOUND:", !!user);
+
+if (user) {
+  console.log("PASSWORD MATCH:", await user.matchPassword(password));
+}
+
+if (user && (await user.matchPassword(password))) {
       const token = generateToken(res, user._id);
       res.json({
         success: true,
@@ -158,3 +166,5 @@ module.exports = {
   getMe,
   updateProfile,
 };
+
+//hello nigama
