@@ -13,7 +13,10 @@ const registerUser = async (req, res, next) => {
       return next(new Error('Please provide name, email and password'));
     }
 
-    const userExists = await User.findOne({ email: email.toLowerCase() });
+    const userExists = await User.findOne({
+      email: email.toLowerCase(),
+    });
+
     if (userExists) {
       res.status(400);
       return next(new Error('User with this email already exists'));
@@ -26,24 +29,25 @@ const registerUser = async (req, res, next) => {
       phone: phone || '',
     });
 
-    if (user) {
-      const token = generateToken(res, user._id);
-      res.status(201).json({
-        success: true,
-        message: 'User registered successfully',
-        data: {
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-          phone: user.phone,
-          avatar: user.avatar,
-          token,
-        },
-      });
-    } else {
+    if (!user) {
       res.status(400);
       return next(new Error('Invalid user data'));
     }
+
+    const token = generateToken(res, user._id);
+
+    res.status(201).json({
+      success: true,
+      message: 'User registered successfully',
+      data: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        avatar: user.avatar,
+        token,
+      },
+    });
   } catch (error) {
     next(error);
   }
@@ -61,33 +65,36 @@ const loginUser = async (req, res, next) => {
       return next(new Error('Please provide email and password'));
     }
 
-    const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
+    const user = await User.findOne({
+      email: email.toLowerCase(),
+    }).select('+password');
 
-console.log("LOGIN EMAIL:", email);
-console.log("USER FOUND:", !!user);
-
-if (user) {
-  console.log("PASSWORD MATCH:", await user.matchPassword(password));
-}
-
-if (user && (await user.matchPassword(password))) {
-      const token = generateToken(res, user._id);
-      res.json({
-        success: true,
-        message: 'Logged in successfully',
-        data: {
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-          phone: user.phone,
-          avatar: user.avatar,
-          token,
-        },
-      });
-    } else {
+    if (!user) {
       res.status(401);
       return next(new Error('Invalid email or password'));
     }
+
+    const passwordMatch = await user.matchPassword(password);
+
+    if (!passwordMatch) {
+      res.status(401);
+      return next(new Error('Invalid email or password'));
+    }
+
+    const token = generateToken(res, user._id);
+
+    res.json({
+      success: true,
+      message: 'Logged in successfully',
+      data: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        avatar: user.avatar,
+        token,
+      },
+    });
   } catch (error) {
     next(error);
   }
@@ -101,6 +108,7 @@ const logoutUser = (req, res) => {
     httpOnly: true,
     expires: new Date(0),
   });
+
   res.json({
     success: true,
     message: 'Logged out successfully',
@@ -113,6 +121,7 @@ const logoutUser = (req, res) => {
 const getMe = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id);
+
     res.json({
       success: true,
       data: user,
@@ -128,13 +137,15 @@ const getMe = async (req, res, next) => {
 const updateProfile = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id);
+
     if (!user) {
       res.status(404);
       return next(new Error('User not found'));
     }
 
     user.name = req.body.name || user.name;
-    user.phone = req.body.phone !== undefined ? req.body.phone : user.phone;
+    user.phone =
+      req.body.phone !== undefined ? req.body.phone : user.phone;
     user.avatar = req.body.avatar || user.avatar;
 
     if (req.body.password) {
@@ -166,5 +177,3 @@ module.exports = {
   getMe,
   updateProfile,
 };
-
-//hello nigama
