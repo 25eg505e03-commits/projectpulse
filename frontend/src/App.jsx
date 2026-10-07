@@ -30,7 +30,7 @@ function App() {
     <AuthProvider>
       <OrganizationProvider>
         <ProjectProvider>
-          <Router>
+          <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <Routes>
               {/* Public Auth Routes */}
               <Route path="/login" element={<Login />} />

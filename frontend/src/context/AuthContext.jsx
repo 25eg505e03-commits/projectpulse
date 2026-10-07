@@ -3,11 +3,21 @@ import { authService } from '../services/api';
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() => {
+const getStoredUser = () => {
+  try {
     const savedUser = localStorage.getItem('projectpulse_user');
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
+    if (!savedUser) return null;
+    const parsedUser = JSON.parse(savedUser);
+    return parsedUser && typeof parsedUser === 'object' ? parsedUser : null;
+  } catch (error) {
+    console.warn('Stored user data was invalid and was cleared.');
+    localStorage.removeItem('projectpulse_user');
+    return null;
+  }
+};
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(() => getStoredUser());
   const [token, setToken] = useState(() => localStorage.getItem('projectpulse_token') || null);
   const [loading, setLoading] = useState(true);
 

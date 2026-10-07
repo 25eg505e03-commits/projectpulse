@@ -15,19 +15,24 @@ const app = express();
 
 // CORS Configuration
 const allowedOrigins = [
-  process.env.FRONTEND_URL || 'http://localhost:5173',
-  'http://localhost:3000',
+  process.env.FRONTEND_URL,
+  'http://localhost:5173',
   'http://127.0.0.1:5173',
-];
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'https://projectpulse-cqql.onrender.com',
+  'https://projectpulse-frontend.vercel.app',
+].filter(Boolean);
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
-      } else {
-        callback(null, true); // Allow dev origins dynamically
+        return;
       }
+
+      callback(new Error('CORS policy: origin not allowed'));
     },
     credentials: true,
   })
@@ -73,6 +78,7 @@ const PORT = process.env.PORT || 5000;
 
 if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
+    console.log(`MongoDB connected successfully`);
     console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
   });
 }
